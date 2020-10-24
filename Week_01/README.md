@@ -1,6 +1,6 @@
 # 学习笔记
 
-## 0.
+## 0.预习
 
 查找jdk安装地址
 
@@ -9,8 +9,6 @@ jps -v
 
 41488 Jps -Denv.class.path=.;D:\java\jdk8\lib\dt.jar;D:\java\jdk8\lib\tools.jar; -Dapplication.home=D:\java\jdk8 -Xms8m
 ```
-
-
 
 ## 1.课堂笔记
 
@@ -356,8 +354,6 @@ public class MovingAverage {
 
 ```
 
-
-
 ## 3.线程栈和字节码执行模型
 
 - jvm是一台基于栈的计算器，每个线程都有自己的线程栈，用于存储栈帧，
@@ -477,7 +473,87 @@ public static void main(java.lang.String[]);
 
 Java Memory Model
 
-## 8.内存管理和垃圾回收
+- java内存模型定义了jvm如何使用内存，广义将内存模型分为两部分
+  - jvm内存结构
+  - JMM与线程规范
+
+## 8.jvm内存结构
+
+![](./内存图2.png)
+
+- 线程栈
+- 堆内存
+
+1. 如果是原生类型的局部变量，保存到栈，
+2. 如果是对象，保存到堆，栈内存的是堆中对象的引用，类的静态变量和类定义一样保存到堆
+
+3. 线程执行过程中，有多个方法调用栈，每执行到一个方法，就创建对应的栈帧，线程栈内有多个栈帧
+4. 栈帧由（操作数栈，局部变量表，class引用组成<指明引用那个类的哪个方法，class在运行时常量池>）
+
+堆：
+
+1. 堆内存是所有线程共享的内存空间，jvm将heap分为年轻代和老年代，年轻代划分为新生代（伊甸区）和存活区，大部分的gc算法中存活区有s0和s1，总有一个区是空的，而且一般空间较小
+2. 非堆本质上也是heap，只是一般不归GC管理，里面划分3个内存池，
+   - metaspace，以前叫持久代，java8开始叫元数据区
+   - ccs，存放class信息，和mataspace有交叉
+   - code cache，存放JIT编译器编译的本地机器代码
+
+## 9.JVM启动参数
+
+- `-` 开头为标准参数，所有的JVM都要实现这些参数
+
+- `-D` 设置系统属性
+
+- `-X` 非标准参数，基本都是传给JVM的，可以使用 `java -X`命令查看当前JVM支持的非标准参数
+
+  java 8 环境下执行，常用参数
+
+```shell
+	java -X
+    -Xms<size>        设置初始 Java 堆大小
+    -Xmx<size>        设置最大 Java 堆大小
+    -Xss<size>        设置 Java 线程堆栈大小   
+```
+
+- `-XX` 控制JVM行为，跟具体的JVM实现有关，随时在下个版本取消
+  - `-XX:+-Flags` +-是对布尔值进行开关
+  - `-XX:key=value` 指定某个选项的值
+
+### 内存配置
+
+- `-Xmx` 指定最大堆内存，如-Xmx4g
+
+- `-Xms` 指定堆空间的初始大小，如-Xms4g，服务器上将Xmx和Xms设置为一致，否则刚启动应用就会出现好几个fullgc，堆内存的扩容可能导致性能抖动（如果xms小，那么分到young区和old区的自然都小，young区满了，很快分到old，old很快满了，就会进行fullgc） **默认新生代：老年代 = 1：2**
+
+- `-Xmn`  等价于-XX:NewSize 建议设置为Xmx的 1/2 - 1/4
+
+- `-XX:MaxPermSize=size`, 这是JDK1.7之前使用的。Java8默认允许的Meta空间无限大，此参数无效
+
+- `-XX:MaxMetaspaceSize=size`, Java8默认不限制Meta空间, 一般不允许设置该选项。 
+
+- `-XX:MaxDirectMemorySize=size`，系统可以使用的最大堆外内存，这个参数跟-Dsun.nio.MaxDirectMemorySize效果相同。 
+
+- `-Xss`, 设置每个线程栈的字节数。 例如 -Xss1m 指定线程栈为1MB，与- 
+
+  XX:ThreadStackSize=1m等价
+
+### GC配置
+
+-XX:+UseG1GC：使用G1垃圾回收器 
+
+-XX:+UseConcMarkSweepGC：使用CMS垃圾回收器 
+
+-XX:+UseSerialGC：使用串行垃圾回收器 
+
+-XX:+UseParallelGC：使用并行垃圾回收器 
+
+-XX:+UnlockExperimentalVMOptions -XX:+UseZGC 
+
+### 分析诊断参数
+
+
+
+## 9.内存管理和垃圾回收
 
 - 内存管理就是内存的生命周期管理，包括内存的申请、压缩、回收等
 
@@ -487,7 +563,116 @@ Java Memory Model
 
 
 
+## 作业
 
+ **1.（选做）**自己写一个简单的 Hello.java，里面需要涉及基本类型，四则运行，if 和 for，然后自己分析一下对应的字节码，有问题群里讨论。 
+
+java文件
+
+```
+public class HelloWorld {
+    public static void main(String[] args) {
+        int a = 1;
+        int b = 2;
+        int c = a + b;
+        for (int i = 0; i < 10; i++) {
+            int temp;
+            if (i < c) {
+                temp = c - i;
+            } else {
+                temp = c * i;
+            }
+            System.out.println(temp);
+        }
+    }
+}
+```
+
+编译class文件
+
+```java
+public class HelloWorld {
+    public HelloWorld() {
+    }
+
+    public static void main(String[] var0) {
+        byte var1 = 1;
+        byte var2 = 2;
+        int var3 = var1 + var2;
+
+        for(int var4 = 0; var4 < 10; ++var4) {
+            int var5;
+            if (var4 < var3) {
+                var5 = var3 - var4;
+            } else {
+                var5 = var3 * var4;
+            }
+
+            System.out.println(var5);
+        }
+
+    }
+}
+```
+
+javap 字节码文件
+
+```java
+Compiled from "HelloWorld.java"
+public class homework.HelloWorld {
+  public homework.HelloWorld();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: iconst_1
+       1: istore_1
+       2: iconst_2
+       3: istore_2
+       4: iload_1
+       5: iload_2
+       6: iadd
+       7: istore_3
+       8: iconst_0
+       9: istore        4
+      11: iload         4
+      13: bipush        10
+      15: if_icmpge     53
+      18: iload         4
+      20: iload_3
+      21: if_icmpge     33
+      24: iload_3
+      25: iload         4
+      27: isub
+      28: istore        5
+      30: goto          39
+      33: iload_3
+      34: iload         4
+      36: imul
+      37: istore        5
+      39: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      42: iload         5
+      44: invokevirtual #3                  // Method java/io/PrintStream.println:(I)V
+      47: iinc          4, 1
+      50: goto          11
+      53: return
+}
+```
+
+**2.（必做）**自定义一个 Classloader，加载一个 Hello.xlass 文件，执行 hello 方法，此文件内容是一个 Hello.class 文件所有字节（x=255-x）处理后的文件。文件群里提供。
+
+```
+自定义HelloClassLoader继承ClassLoader，重写findClass方法，使用defineClass方法加载内存中的class字节数组
+```
+
+3.**（必做）**画一张图，展示 Xmx、Xms、Xmn、Meta、DirectMemory、Xss 这些内存参数的关系。
+
+![](./内存图.png)
+
+**4.（选做）**检查一下自己维护的业务系统的 JVM 参数配置，用 jstat 和 jstack、jmap 查看一下详情，并且自己独立分析一下大概情况，思考有没有不合理的地方，如何改进。
 
 
 
