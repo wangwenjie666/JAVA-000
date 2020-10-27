@@ -622,11 +622,112 @@ Java Memory Model
 
 ### 5.GC分类
 
-#### 1.串行GC/并行GC
+#### 1.串行GC
 
-serial GC /Parallel GC
+serial GC 
 
+- -XX:+UseSerialGC 配置串行 GC
+- 串行 GC 对年轻代使用 mark-copy（标记-复制） 算法,对老年代使用 mark-sweep-compact （标记-清除-整理）算法
+- 都是单线程GC，不能并行处理，会触发STW
+- -XX:+USeParNewGC 改进版本的 Serial GC，可以配合 CMS 使用
 
+**适用场景**
+
+该选项只适合几百 MB 堆内存的 JVM（小堆），而且是单核 CPU 时比较有用
+
+#### 2.并行GC
+
+-XX：+UseParallelGC
+
+-XX：+UseParallelOldGC 
+
+-XX：+UseParallelGC -XX:+UseParallelOldGC
+
+- 年轻代和老年代的垃圾回收都会触发 STW 事件。 在年轻代使用 标记-复制（mark-copy）算法，在老年代使用 标记-清除-整理（mark-sweep-compact）算法。
+- -XX：ParallelGCThreads=N 来指定 GC 线程数， 其默认值为 CPU 核心数
+
+**适用场景**：
+
+并行垃圾收集器适用于多核服务器，主要目标是增加吞吐量。因为对系统资源的有效使用，能达到 
+
+更高的吞吐量
+
+#### 3.CMS GC
+
+- -XX:+UseConcMarkSweepGC
+
+- 其对年轻代采用并行 STW 方式的 mark-copy (标记-复制)算法，对老年代主要使用并发 mark-sweep (标记-清除)算法
+- 不对老年代进行整理，而是使用空闲列表（free-lists）来管理内存空间的回收,维护空余的内存
+- 在 mark-and-sweep （标记-清除） 阶段的大部分工作和应用线程一起并发执行
+
+CMS执行的6个阶段
+
+```powershell
+PS C:\Users\Administrator> jmap -heap 12300
+Attaching to process ID 12300, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 25.191-b12
+
+using parallel threads in the new generation.
+using thread-local object allocation.
+Concurrent Mark-Sweep GC
+
+Heap Configuration:
+   MinHeapFreeRatio         = 40
+   MaxHeapFreeRatio         = 70
+   MaxHeapSize              = 2132803584 (2034.0MB)
+   NewSize                  = 44695552 (42.625MB)
+   MaxNewSize               = 523436032 (499.1875MB)
+   OldSize                  = 89522176 (85.375MB)
+   NewRatio                 = 2
+   SurvivorRatio            = 8
+   MetaspaceSize            = 21807104 (20.796875MB)
+   CompressedClassSpaceSize = 1073741824 (1024.0MB)
+   MaxMetaspaceSize         = 17592186044415 MB
+   G1HeapRegionSize         = 0 (0.0MB)
+Heap Usage:
+New Generation (Eden + 1 Survivor Space):
+   capacity = 40239104 (38.375MB)
+   used     = 30660064 (29.239715576171875MB)
+   76.19469856982899% used
+Eden Space:
+   capacity = 35782656 (34.125MB)
+   used     = 26655040 (25.42022705078125MB)
+   free     = 9127616 (8.70477294921875MB)
+   74.49150784111721% used
+From Space:
+   capacity = 4456448 (4.25MB)	
+   used     = 4005024 (3.819488525390625MB)
+   free     = 451424 (0.430511474609375MB)
+   89.87031824448529% used
+To Space:
+   capacity = 4456448 (4.25MB)
+   used     = 0 (0.0MB)
+   free     = 4456448 (4.25MB)
+   0.0% used
+concurrent mark-sweep generation:
+   capacity = 89522176 (85.375MB)
+   used     = 18628936 (17.76593780517578MB)
+   free     = 70893240 (67.60906219482422MB)
+   20.80929757560853% used
+
+16057 interned Strings occupying 2178392 bytes.
+```
+
+6,7,8 并行 gc效率高，吞吐量高
+
+9以上 G1
+
+CMS老年代，parnew新生代 （短延迟）
+
+#### 4.G1 GC
+
+- -XX:+UseG1GC：启用G1 GC； 
+
+使用场景：
+
+内存堆较大，gc的时间可控
 
 ## 作业
 
