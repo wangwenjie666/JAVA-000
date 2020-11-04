@@ -1,7 +1,7 @@
 # Week02
 
-- [ ] nio总结
-- [ ] netty 例子
+- [x] nio总结
+- [x] netty 例子，查看压测指标
 
 # NIO
 
