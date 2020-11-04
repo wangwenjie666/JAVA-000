@@ -19,9 +19,9 @@ public class HttpInboundServer {
 
     private int port;
 
-    private String proxyServer;
+    private String[] proxyServer;
 
-    public HttpInboundServer(int port, String proxyServer) {
+    public HttpInboundServer(int port, String[] proxyServer) {
         this.port = port;
         this.proxyServer = proxyServer;
     }

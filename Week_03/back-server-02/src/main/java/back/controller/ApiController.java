@@ -24,7 +24,7 @@ public class ApiController {
         String value = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getHeader(headerKey);
 
         log.info("==> header key = [{}],value = [{}]", headerKey, value);
-        log.info("==> 请求成功.... server1");
-        return "helloworld";
+        log.info("==> 请求成功.... server2");
+        return "helloworld2";
     }
 }

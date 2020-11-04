@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
@@ -31,7 +32,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 @Slf4j
 public class MyHttpClient {
 
-    private String serverUrl;
+    private String[] serverUrl;
 
     private Map<String, String> header;
 
@@ -43,7 +44,7 @@ public class MyHttpClient {
         this.header = header;
     }
 
-    public MyHttpClient(String serverUrl) {
+    public MyHttpClient(String[] serverUrl) {
         this.serverUrl = serverUrl;
     }
 
@@ -93,7 +94,7 @@ public class MyHttpClient {
         String uri = fullRequest.uri();
         Object msg = "";
         if (uri.startsWith("/api")) {
-            msg = this.doGet(this.serverUrl + uri);
+            msg = this.doGet(getRandomServerUrl() + uri);
             log.info("==> 响应为 = {}", msg);
         }
 
@@ -102,5 +103,14 @@ public class MyHttpClient {
         response.headers().set("Content-Type", "application/json");
         response.headers().setInt("Content-Length", response.content().readableBytes());
         ctx.write(response);
+    }
+
+    public String getRandomServerUrl() {
+        //负载均衡，取随机服务器访问
+        Random random = new Random();
+        int index = random.nextInt(this.serverUrl.length);
+        String server = this.serverUrl[index];
+        log.info("==> 负载均衡跳转服务为 = [{}]", server);
+        return server;
     }
 }
