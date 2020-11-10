@@ -8,15 +8,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 /**
- * 方式一: CountDownLatch + Callable + FutureTask
+ * 方式二：Callable + FutureTask
  *
  * @author wangwenjie
  * @date 2020-11-09
  */
-public class Fn1 {
+public class Fn2 {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        Thread1 thread1 = new Thread1(countDownLatch);
+        Thread1 thread1 = new Thread1();
         FutureTask<Integer> task = new FutureTask<>(thread1);
 
         new Thread(task).start();
@@ -28,16 +27,11 @@ public class Fn1 {
     }
 
     static class Thread1 implements Callable<Integer> {
-        private CountDownLatch latch;
-
-        public Thread1(CountDownLatch latch) {
-            this.latch = latch;
-        }
 
         @Override
         public Integer call() throws Exception {
+            Thread.sleep(2000);
             int result = Fibo.sum();
-            latch.countDown();
             System.out.println("子线程计算结束...");
             return result;
         }
