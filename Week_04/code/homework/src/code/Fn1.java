@@ -20,6 +20,8 @@ public class Fn1 {
         FutureTask<Integer> task = new FutureTask<>(thread1);
 
         new Thread(task).start();
+        //主线程等待
+        countDownLatch.await();
 
         Integer result = task.get();
         System.out.println("result = " + result);
@@ -36,9 +38,11 @@ public class Fn1 {
 
         @Override
         public Integer call() throws Exception {
+
             int result = Fibo.sum();
             latch.countDown();
             System.out.println("子线程计算结束...");
+            Thread.sleep(2000);
             return result;
         }
     }

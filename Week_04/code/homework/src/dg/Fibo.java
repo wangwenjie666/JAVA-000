@@ -14,7 +14,7 @@ public class Fibo {
     }
 
     //执行0ms
-    public static int fibo3(int num) {
+    private static int fibo3(int num) {
         int _idx1 = 1;
         int _idx2 = 1;
         int res = 0;
@@ -25,4 +25,5 @@ public class Fibo {
         }
         return res;
     }
+
 }

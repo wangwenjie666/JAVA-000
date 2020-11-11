@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 /**
- * 方式二：Callable + FutureTask
+ * 方式二：Callable + FutureTask + Thread
  *
  * @author wangwenjie
  * @date 2020-11-09
@@ -30,7 +30,6 @@ public class Fn2 {
 
         @Override
         public Integer call() throws Exception {
-            Thread.sleep(2000);
             int result = Fibo.sum();
             System.out.println("子线程计算结束...");
             return result;
