@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-3.2.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+
+    <!--配置bean-->
+    <bean id="student" class="code.entity.Student">
+        <property name="id" value="1"/>
+        <property name="name" value="张麻子"/>
+    </bean>
+
+    <!--配置注入list-->
+    <bean id="studentList" class="code.entity.Classt">
+        <property name="studentList">
+            <list>
+                <ref bean="student"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--xml 配置 aop begin-->
+    <!--1.配置aop对象-->
+    <bean id="aop1" class="code.aop.Aop1"/>
+    <bean id="aop1_1" class="code.aop.Aop1_1"/>
+    <bean id="studentService" class="code.service.StudentService"></bean>
+
+    <!--aop注解方式配置-->
+    <aop:aspectj-autoproxy />
+    <!-- 强制cglib 代理，不管有没有接口实现-->
+<!--    <aop:aspectj-autoproxy proxy-target-class="true"/>-->
+
+    <!--2.配置aop操作-->
+    <aop:config>
+        <!--切入点-->
+        <aop:pointcut id="pointcut" expression="execution(* code.service.StudentService.getStudent())"/>
+        <!--配置切面，增强到方法上-->
+        <!--order 可以配置切面的优先级 可以让前置后置，和环绕通知的顺序得到保障-->
+        <aop:aspect ref="aop1">
+            <aop:around method="around" pointcut-ref="pointcut"/>
+            <aop:after-returning method="afterReturing" pointcut-ref="pointcut"/>
+            <aop:after-throwing method="afterThrowing" pointcut-ref="pointcut"/>
+        </aop:aspect>
+        <!--order 小-->
+        <aop:aspect ref="aop1_1">
+            <aop:before method="before" pointcut-ref="pointcut"/>
+            <aop:after method="after" pointcut-ref="pointcut"/>
+        </aop:aspect>
+    </aop:config>
+    <!--xml 配置 aop end-->
+
+    <context:component-scan base-package="code"/>
+
+</beans>

@@ -1,5 +1,6 @@
 package dg;
 
+
 /**
  * 菲波那切数列，使用优化后的
  *  递归使用参考 Week_04/code/lesson1/src/code/DiGui.java
@@ -8,6 +9,8 @@ package dg;
  * @date 2020-11-09
  */
 public class Fibo {
+
+    private Fibo fibo;
 
     public static int sum() {
         return fibo3(36);
