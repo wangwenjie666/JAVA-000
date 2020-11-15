@@ -43,15 +43,14 @@ public class SpringIOCDemo {
             [main] INFO code.aop.Aop1 - 返回后通知执行
             [main] INFO code.aop.Aop1_1 - 后置通知执行
         * */
-
-//        studentService.annotationFn();
+        StudentService service = context.getBean("studentService",StudentService.class);
+        service.annotationFn();
 
 //        log.info("studentService class = {},instanceOf StudentService = {}",
 //                studentService.getClass(), studentService instanceof StudentService); //StudentService$$EnhancerBySpringCGLIB$$4c803fc8
 
 //        StuService stuService = context.getBean(StuService.class);
 //        log.info("stuService class = {}", stuService.getClass());
-
 
     }
 }

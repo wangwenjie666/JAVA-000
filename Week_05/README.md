@@ -95,6 +95,26 @@ public class Aop1 {
 
 注意：如果before和after和环绕通知中都有在目标方法前执行的额外方法，默认顺序是不能够保证的，需要实现Ordered接口来保证或者在xml文件中配置 order
 
+- before和after所在切面的优先级低，则为
+
+```java
+[main] INFO code.aop.Aop2_2 - 注解方式--before执行
+[main] INFO code.aop.Aop2 - 注解方式--环绕前执行
+[main] INFO code.service.StudentService - 执行目标方法 --- student id = 1,name = 张麻子
+[main] INFO code.aop.Aop2 - 注解方式--环绕后执行
+[main] INFO code.aop.Aop2_2 - 注解方式--after执行
+```
+
+- 否则为
+
+```java
+[main] INFO code.aop.Aop2 - 注解方式--环绕前执行
+[main] INFO code.aop.Aop2_2 - 注解方式--before执行
+[main] INFO code.service.StudentService - 执行目标方法 --- student id = 1,name = 张麻子
+[main] INFO code.aop.Aop2_2 - 注解方式--after执行
+[main] INFO code.aop.Aop2 - 注解方式--环绕后执行
+```
+
 ### 5.字节码增强和反射
 
 反射不改变字节码问价，字节码增强会改变，类似于基因操作
@@ -150,6 +170,199 @@ protected Object initializeBean(final String beanName, final Object bean, RootBe
 
 ## 5.Spring xml配置原理
 
+- spring.handlers文件 ：指定解析xml的handler处理类
+
+```properties
+http\://mybeanconfiguration/oneConfiguration=code.handler.OneBeanHandler
+```
+
+- xml 节点
+
+```java
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class OneBeanElementTag {
+    public static final String ROOT_TAG = "rule";
+    public static final String NAME_TAG = "name";
+    public static final String PHONE_TAG = "phone";
+    public static final String GIRLFRIENDS_TAG = "girlFriends";
+}
+
+```
+
+- handler类
+
+```java
+public final class OneBeanHandler extends NamespaceHandlerSupport {
+    @Override
+    public void init() {
+        registerBeanDefinitionParser(OneBeanElementTag.ROOT_TAG, new OneBeanDefinitionParser());
+    }
+}
+```
+
+- 解析类
+
+```java
+public final class OneBeanDefinitionParser extends AbstractBeanDefinitionParser {
+    @Override
+    protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(OneConfiguration.class);
+        factory.addConstructorArgValue(element.getAttribute(OneBeanElementTag.PHONE_TAG));
+        factory.addConstructorArgValue(element.getAttribute(OneBeanElementTag.NAME_TAG));
+        factory.addConstructorArgValue(element.getAttribute(OneBeanElementTag.GIRLFRIENDS_TAG).split(","));
+        return factory.getBeanDefinition();
+    }
+}
+```
+
+- 注入bean实体
+
+```java
+public class OneConfiguration {
+    private final String name;
+    private final String phone;
+    private final List<String> girlFriends;
+
+
+    public OneConfiguration(final String name, final String phone, final List<String> girlFriends) {
+        this.name = name;
+        this.phone = phone;
+        this.girlFriends = girlFriends;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public List<String> getGirlFriends() {
+        return girlFriends;
+    }
+
+    @Override
+    public String toString() {
+        return "OneConfiguration{" +
+                "name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", girlFriends=" + girlFriends +
+                '}';
+    }
+}
+```
+
+- spring.schemas：配置xsd文件路径
+
+```properties
+http\://mybeanconfiguration/oneConfiguration/mybean.xsd=META-INF/namespace/mybean.xsd
+```
+
+- *.xsd文件：指定xsd文件规范（id节点是必须要传的）
+
+```xml-dtd
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://mybeanconfiguration/oneConfiguration"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://mybeanconfiguration/oneConfiguration"
+            elementFormDefault="qualified">
+    <xsd:import namespace="http://www.springframework.org/schema/beans"
+                schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>
+
+    <xsd:element name="rule">
+        <xsd:complexType>
+            <xsd:attribute name="id" type="xsd:string" use="required"/>
+            <xsd:attribute name="name" type="xsd:string" use="required"/>
+            <xsd:attribute name="phone" type="xsd:string" use="required"/>
+            <xsd:attribute name="girlFriends" type="list" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:simpleType name="list">
+        <xsd:list itemType="xsd:string"/>
+    </xsd:simpleType>
+</xsd:schema>
+```
+
+- applicationContext.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mybean="http://mybeanconfiguration/oneConfiguration"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                        http://mybeanconfiguration/oneConfiguration
+                http://mybeanconfiguration/oneConfiguration/mybean.xsd">
+
+    <!-- mybean.xsd 文件中必须指定id属性，否则会抛出异常 -->
+    <mybean:rule id="oneConfiguration" name="张麻子" phone="10086" girlFriends="小张,小李,小王"/>
+</beans>
+```
+
+- 获取自定义配置类
+
+```java
+@Slf4j
+public class Application {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        OneConfiguration bean = context.getBean("oneConfiguration", OneConfiguration.class);
+        log.info("bean = {}", bean); //bean = OneConfiguration{name='10086', phone='张麻子', girlFriends=[小张, 小李, 小王]}
+    }
+}
+
+```
+
+- 参考代码：**[自定义xml配置，注入bean到容器中](./homework03)**
+
+## 6.Spring Messing
+
+jms
+
+
+
+# Springboot
+
+## 1.简介
+
+简而言之，SpringBoot是搭建Spring环境的一套脚手架工具，关注于自动配置，配置驱动
+
+## 2.核心原理
+
+1. 自动化配置：基于Configuration,Enablexx,Condition
+2. spring-boot-starter：脚手架核心，整合了很多三方的组件
+
+## 3.自动配置原理
+
+核心注解 @EnableAutoConfiguration
+
+META-INF\spring.factories 配置文件 包含很多自动配置了 EnableAutoConfiguration = xxx
+
+```java
+@Import({AutoConfigurationImportSelector.class})
+public @interface EnableAutoConfiguration {
+    String ENABLED_OVERRIDE_PROPERTY = "spring.boot.enableautoconfiguration";
+
+    Class<?>[] exclude() default {};
+
+    String[] excludeName() default {};
+}
+```
+
+AutoConfigurationImportSelector
+
+```java
+public String[] selectImports(AnnotationMetadata annotationMetadata) {
+        if (!this.isEnabled(annotationMetadata)) {
+            return NO_IMPORTS;
+        } else {
+            //加载配置文件，读取自动配置类
+            AutoConfigurationMetadata autoConfigurationMetadata = 
+                AutoConfigurationMetadataLoader.loadMetadata(this.beanClassLoader);
+```
 
 
 
@@ -157,6 +370,24 @@ protected Object initializeBean(final String beanName, final Object bean, RootBe
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- 代码：**[nicefish-backend](https://gitee.com/nicefish/nicefish-backend)**
+- **[sharding-sphere example]( git clone https://github.com/apache/shardingsphere)**
 
 
 

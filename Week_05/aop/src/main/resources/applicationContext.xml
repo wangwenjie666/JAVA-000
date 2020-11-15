@@ -32,9 +32,9 @@
     <bean id="studentService" class="code.service.StudentService"></bean>
 
     <!--aop注解方式配置-->
-    <aop:aspectj-autoproxy />
+<!--    <aop:aspectj-autoproxy />-->
     <!-- 强制cglib 代理，不管有没有接口实现-->
-<!--    <aop:aspectj-autoproxy proxy-target-class="true"/>-->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
 
     <!--2.配置aop操作-->
     <aop:config>

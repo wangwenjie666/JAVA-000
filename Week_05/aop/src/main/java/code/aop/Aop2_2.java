@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Slf4j
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE + 5)
+@Order(Ordered.HIGHEST_PRECEDENCE + 15)
 public class Aop2_2 {
 
     //切入点
