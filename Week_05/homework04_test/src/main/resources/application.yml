@@ -1,0 +1,6 @@
+server:
+  port: 8888
+
+foo:
+  name: 张麻子
+  enable: true

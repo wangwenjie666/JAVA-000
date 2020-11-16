@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * root
+ * 自动配置项目 执行mvn install打包
  *
  * @author wangwenjie
  * @date 2020-11-15
