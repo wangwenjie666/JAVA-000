@@ -14,4 +14,23 @@
         <property name="name" value="zhangsan"/>
         <property name="phone" value="10086"/>
     </bean>
+
+    <bean id="userDao" class="code.component.xml.dao.UserDao"/>
+
+    <!--属性注入需要提供属性set方法-->
+    <bean id="userService" class="code.component.xml.service.UserService">
+        <property name="userDao" ref="userDao"/>
+    </bean>
+
+    <!--构造器注入-->
+    <bean id="loginService" class="code.component.xml.service.LoginService">
+        <constructor-arg ref="userDao"/>
+    </bean>
+
+    <!--工厂bean-->
+    <bean id="myFactoryBean" class="code.component.xml.factorybean.MyFactoryBean"/>
+
+    <bean id="myFactoryBean2" class="code.component.xml.factorybean.MyFactoryBean2"/>
+    <!--指定factory工厂和工厂方法-->
+    <bean id="three" factory-bean="myFactoryBean2" factory-method="newInstance"/>
 </beans>

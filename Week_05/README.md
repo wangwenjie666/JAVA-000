@@ -168,6 +168,81 @@ protected Object initializeBean(final String beanName, final Object bean, RootBe
 - 代码：**[beanLifeCycle](./beanLifeCycle)**
 - 参考资料： **[bean生命周期]( https://www.cnblogs.com/zrtqsk/p/3735273.html )**
 
+### SpringBean的装配方式
+
+1. 通过xml方式装配（xml中配置bean id class）
+
+   1. 属性注入（需要提供属性的setter方法）
+
+   ```xml
+   //普通属性注入
+   <bean id="xmlBean" class="code.component.xml.XmlBean">
+           <property name="name" value="zhangsan"/>
+           <property name="phone" value="10086"/>
+       </bean>
+   
+   //对象属性注入
+   <!--属性注入需要提供属性set方法-->
+       <bean id="userService" class="code.component.xml.service.UserService">
+           <property name="userDao" ref="userDao"/>
+       </bean>
+   ```
+
+   2. 构造方法注入（构造方法）
+
+   ```xml
+   <!--构造器注入-->
+       <bean id="loginService" class="code.component.xml.service.LoginService">
+           <constructor-arg ref="userDao"/>
+       </bean>
+   ```
+
+   3. 工厂方法（实现FactoryBean）
+
+   ```xml
+    <!--工厂bean-->
+       <bean id="myFactoryBean" class="code.component.xml.factorybean.MyFactoryBean"/>
+   ```
+
+   ```java
+   public class MyFactoryBean implements FactoryBean<Three> {
+       @Override
+       public Three getObject() throws Exception {
+           return new Three();
+       }
+   
+       @Override
+       public Class<?> getObjectType() {
+           return Three.class;
+       }
+   
+       @Override
+       public boolean isSingleton() {
+           return true;
+       }
+   }
+   ```
+
+   4. 自定义工厂（xml配置工厂类和工厂方法）
+
+   ```xml
+   <bean id="myFactoryBean2" class="code.component.xml.factorybean.MyFactoryBean2"/>
+       <!--指定factory工厂和工厂方法-->
+       <bean id="three" factory-bean="myFactoryBean2" factory-method="newInstance"/>
+   ```
+
+   ```java
+   public class MyFactoryBean2 {
+       public Three newInstance() {
+           return new Three();
+       }
+   }
+   ```
+
+2. 隐式bean扫描和自动装配（添加@Component等注解表明是组件类型，会被容器创建bean，通过包扫描扫描这些注解所在类的包）
+
+3. javaBean（开启包扫描，使用@Configuration+@Bean的方式装配bean）
+
 ## 5.Spring xml配置原理
 
 - spring.handlers文件 ：指定解析xml的handler处理类
