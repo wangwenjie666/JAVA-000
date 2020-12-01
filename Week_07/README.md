@@ -272,5 +272,5 @@ mysql> select * from order1 where order_id > 1000000 limit 2;
    Query OK, 0 rows affected (0.01 sec)
    ```
 
-   
+## 4.读写分离配置
 
