@@ -16,10 +16,12 @@ public class DataSourceContextHolder {
     }
 
     public static void setMaster() {
+        System.out.println("切换数据源到master...");
         LOCAL.set(MASTER);
     }
 
     public static void setSlave() {
+        System.out.println("切换数据源到slave...");
         LOCAL.set(SLAVE);
     }
 

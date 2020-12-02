@@ -1,5 +1,7 @@
 package code.service;
 
+import code.annotation.Master;
+import code.annotation.Slave;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -14,28 +16,27 @@ import java.util.Map;
 @Service
 public class UserService {
 
-    private final JdbcTemplate masterTemplate;
-    private final JdbcTemplate slaveTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    public UserService(JdbcTemplate masterTemplate, JdbcTemplate slaveTemplate) {
-        this.masterTemplate = masterTemplate;
-        this.slaveTemplate = slaveTemplate;
+    public UserService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     /**
-     * insert into master & slave
+     * insert into master
      */
-    public void insertUser() {
-        final String sql = "insert into t_user(username,dbsource) values ('zhangsan',?)";
-        masterTemplate.update(sql, "master");
-        slaveTemplate.update(sql, "slave");
+    @Master
+    public void insertUser(final String name, final String source) {
+        final String sql = "insert into t_user(username,dbsource) values (?, ?)";
+        jdbcTemplate.update(sql, name, source);
     }
 
     /**
      * select from slave
      */
-    public void selectUser(Integer id) {
-        Map<String, Object> map = slaveTemplate.queryForMap("select * from t_user where id = " + id);
+    @Slave
+    public void selectUser() {
+        Map<String, Object> map = jdbcTemplate.queryForMap("select * from t_user order by id desc limit 1");
         System.out.println(map);
     }
 }

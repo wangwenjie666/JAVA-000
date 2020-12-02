@@ -29,9 +29,13 @@ public class Application {
     @Bean
     public ApplicationRunner init() {
         return args -> {
-            userService.insertUser();
+            System.out.println("==> insert begin");
+            userService.insertUser("hello world", "system");
+            System.out.println("==> insert end");
 
-            userService.selectUser(1);
+            System.out.println("==> select begin");
+            userService.selectUser();
+            System.out.println("==> select begin");
         };
     }
 }

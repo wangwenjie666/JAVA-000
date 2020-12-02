@@ -3,8 +3,7 @@ package code.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import javax.sql.DataSource;
+import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 /**
  * jdbcTemplate config
@@ -15,23 +14,15 @@ import javax.sql.DataSource;
 @Configuration
 public class JdbcTemplateConfig {
 
-    private final DataSource master;
-    private final DataSource slave;
+    private final AbstractRoutingDataSource routingDataSource;
 
-    public JdbcTemplateConfig(DataSource master, DataSource slave) {
-        this.master = master;
-        this.slave = slave;
+    public JdbcTemplateConfig(AbstractRoutingDataSource routingDataSource) {
+        this.routingDataSource = routingDataSource;
     }
 
     @Bean
-    JdbcTemplate masterTemplate() {
-        return new JdbcTemplate(master);
+    JdbcTemplate jdbcTemplate() {
+        return new JdbcTemplate(routingDataSource);
     }
-
-    @Bean
-    JdbcTemplate slaveTemplate() {
-        return new JdbcTemplate(slave);
-    }
-
 
 }
