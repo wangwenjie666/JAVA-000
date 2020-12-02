@@ -35,7 +35,7 @@ public class Application {
 
             System.out.println("==> select begin");
             userService.selectUser();
-            System.out.println("==> select begin");
+            System.out.println("==> select end");
         };
     }
 }

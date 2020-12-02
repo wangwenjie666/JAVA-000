@@ -33,7 +33,6 @@ public class DataSourceAop {
 
     }
 
-
     @Before("readPoint()")
     public void beforeRead() {
         DataSourceContextHolder.setSlave();

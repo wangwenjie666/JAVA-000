@@ -23,7 +23,7 @@ public class UserService {
     }
 
     /**
-     * insert into master
+     * insert into master & slave
      */
     @Master
     public void insertUser(final String name, final String source) {
