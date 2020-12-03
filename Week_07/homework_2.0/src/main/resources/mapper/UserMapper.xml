@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="code.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="code.entity.User">
+    <id column="id"  property="id" />
+    <result column="username" property="username" />
+    <result column="dbsource" property="dbsource" />
+  </resultMap>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from tb_user
+  </select>
+
+  <insert id="insert" parameterType="code.entity.User">
+    insert into tb_user(username,dbsource) values (#{username},#{dbsource})
+  </insert>
+</mapper>

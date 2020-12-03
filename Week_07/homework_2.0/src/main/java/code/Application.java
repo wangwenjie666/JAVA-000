@@ -1,9 +1,11 @@
 package code;
 
+import code.entity.User;
 import code.service.UserService;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -26,13 +28,18 @@ public class Application {
     }
 
 
-
     @Bean
     public ApplicationRunner init() {
         return args -> {
-//            userService.insertUser("hello world", "system");
-//
-//            userService.selectUser();
+            User user = new User();
+            user.setUsername("hello shardingshpere");
+            user.setDbsource("system");
+
+            userService.insertUser(user);
+            System.out.println("新增完成...");
+
+            userService.selectUser();
+            System.out.println("查询完成...");
         };
     }
 }
