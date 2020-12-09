@@ -48,4 +48,17 @@ public class OrderController {
         orderService.delete(orderId);
         return "ok";
     }
+
+    //雪花算法均匀分配 2^n -1
+    public static void main(String[] args) {
+        System.out.println(543559159203758081L % 15);
+        System.out.println(543559506479546368L % 15);
+        System.out.println(543559507670728705L % 15);
+        System.out.println(543559813204803584L % 15);
+        System.out.println(543559814219825153L % 15);
+        System.out.println(543559814844776448L % 15);
+        System.out.println(543559815364870145L % 15);
+        System.out.println(543559815872380928L % 15);
+        System.out.println(543559816501526529L % 15);
+    }
 }

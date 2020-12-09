@@ -23,11 +23,11 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `t_order0`;
 CREATE TABLE `t_order0`  (
   `order_id` bigint(11) NOT NULL,
-  `user_id` bigint(11) NULL DEFAULT NULL,
-  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `product` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `user_id` bigint(11)  DEFAULT NULL,
+  `phone` varchar(255)  DEFAULT NULL,
+  `product` varchar(255)  DEFAULT NULL,
   PRIMARY KEY (`order_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB ;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
