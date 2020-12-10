@@ -1,0 +1,22 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: order-server
+  datasource:
+    driver-class-name:  com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/master?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+  main:
+    allow-bean-definition-overriding: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:3000/eureka/
+  instance:
+    prefer-ip-address: true
+
+mybatis:
+  type-aliases-package: code.entity
+  config-location: classpath:mybatis/mybatis-config.xml
