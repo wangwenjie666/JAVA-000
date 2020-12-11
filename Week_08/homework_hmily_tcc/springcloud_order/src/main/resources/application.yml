@@ -20,3 +20,25 @@ eureka:
 mybatis:
   type-aliases-package: code.entity
   config-location: classpath:mybatis/mybatis-config.xml
+
+#Ribbon的负载均衡策略
+ribbon:
+  NFLoadBalancerRuleClassName:  com.netflix.loadbalancer.RandomRule
+  MaxAutoRetriesNextServer : 0
+  MaxAutoRetries: 0
+  ReadTimeout: 10000
+feign:
+  hystrix:
+    enabled : false
+    # 在feign中开启hystrix功能，默认情况下feign不开启hystrix功能
+
+logging:
+  level:
+    root: error
+    org.springframework.web: info
+    org.apache.ibatis: debug
+    org.dromara.hmily.demo.bonuspoint: debug
+    org.dromara.hmily.demo.lottery: debug
+    org.dromara.hmily.demo: debug
+    io.netty: info
+  path: "./logs"

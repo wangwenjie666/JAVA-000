@@ -24,8 +24,8 @@ public class OrderService {
     }
 
     @HmilyTCC(confirmMethod = "confirm", cancelMethod = "cancel")
-    public void pay() {
-        Order order = new Order();
+    public void pay(Order order) {
+
         order.setStatus("处理中");
         orderMapper.saveOrder(order);
         //支付
@@ -36,14 +36,12 @@ public class OrderService {
 
     }
 
-    public void confirm(){
-        Order order = new Order();
+    public void confirm(Order order){
         order.setStatus("成功");
         orderMapper.saveOrder(order);
     }
 
-    public void cancel(){
-        Order order = new Order();
+    public void cancel(Order order){
         order.setStatus("失败");
         orderMapper.saveOrder(order);
     }

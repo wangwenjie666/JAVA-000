@@ -1,7 +1,10 @@
 package code.controller;
 
+import code.entity.Order;
 import code.service.OrderService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -18,9 +21,9 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping("/pay")
-    public String pay(){
-        orderService.pay();
+    @PostMapping("/pay")
+    public String pay(@RequestBody Order order){
+        orderService.pay(order);
         return "ok";
     }
 }
