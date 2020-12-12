@@ -10,6 +10,6 @@ import lombok.Data;
  */
 @Data
 public class Order {
-    private Integer id;
+    private String id;
     private String status;
 }

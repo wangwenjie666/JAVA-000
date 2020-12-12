@@ -2,7 +2,7 @@ package code.controller;
 
 import code.entity.Order;
 import code.service.OrderService;
-import org.springframework.web.bind.annotation.GetMapping;
+import code.service.impl.OrderServiceImpl;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +17,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderServiceImpl orderService) {
         this.orderService = orderService;
     }
 

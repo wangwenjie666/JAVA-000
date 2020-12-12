@@ -2,6 +2,7 @@ package code.mapper;
 
 import code.entity.Order;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Update;
 
 /**
  * order mapper.
@@ -11,6 +12,9 @@ import org.apache.ibatis.annotations.Insert;
  */
 public interface OrderMapper {
 
-    @Insert("insert into t_order(status) values(#{status})")
+    @Insert("insert into t_order(id,status) values(#{id},#{status})")
     void saveOrder(Order order);
+
+    @Update("update t_order set status = #{status} where id = #{id}")
+    void updateOrder(Order order);
 }

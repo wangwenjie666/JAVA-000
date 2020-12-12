@@ -2,6 +2,7 @@ package code.controller;
 
 import code.entity.Account;
 import code.service.AccountService;
+import code.service.impl.AccountServiceImpl;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,7 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountServiceImpl accountService) {
         this.accountService = accountService;
     }
 

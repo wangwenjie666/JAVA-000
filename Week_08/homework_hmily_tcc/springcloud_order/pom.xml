@@ -96,11 +96,6 @@
 
         <dependency>
             <groupId>org.dromara</groupId>
-            <artifactId>hmily-springcloud</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.dromara</groupId>
             <artifactId>hmily-spring-boot-starter-springcloud</artifactId>
         </dependency>
     </dependencies>
