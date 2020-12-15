@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.Optional;
 
 public class DemoResolver implements RpcfxResolver, ApplicationContextAware {
 
