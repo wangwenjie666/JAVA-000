@@ -37,6 +37,9 @@ public final class Rpcfx {
         return (T) enhancer.create();
     }
 
+    /**
+     * Enhancer
+     */
     public static class RpcfxEnhancerInterceptor implements MethodInterceptor {
 
         public static final MediaType JSONTYPE = MediaType.get("application/json; charset=utf-8");
@@ -58,12 +61,11 @@ public final class Rpcfx {
 
             RpcfxResponse response = post(request, url);
 
-
             // 这里判断response.status，处理异常
             // 考虑封装一个全局的RpcfxException
-
             if (response.getStatus()) {
-                return JSON.parse(response.getResult().toString());
+//                return JSON.parse(response.getResult().toString());
+                return response.getResult();
             } else {
                 throw new RpcfxException(response.getException().getMessage());
             }
@@ -75,6 +77,7 @@ public final class Rpcfx {
 
             // 1.可以复用client
             // 2.尝试使用httpclient或者netty client
+//            new
             OkHttpClient client = new OkHttpClient();
             final Request request = new Request.Builder()
                     .url(url)
@@ -87,6 +90,9 @@ public final class Rpcfx {
     }
 
 
+    /**
+     * jdk proxy
+     */
     public static class RpcfxInvocationHandler implements InvocationHandler {
 
         public static final MediaType JSONTYPE = MediaType.get("application/json; charset=utf-8");
