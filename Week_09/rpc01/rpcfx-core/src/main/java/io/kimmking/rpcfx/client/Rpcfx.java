@@ -65,19 +65,19 @@ public final class Rpcfx {
             // 考虑封装一个全局的RpcfxException
             if (response.getStatus()) {
 //                return JSON.parse(response.getResult().toString());
+                //通过自定义json转换器替换
                 return response.getResult();
             } else {
                 throw new RpcfxException(response.getException().getMessage());
             }
         }
 
-        private RpcfxResponse post(RpcfxRequest req, String url) throws IOException {
+        private RpcfxResponse post(RpcfxRequest req, String url) throws Exception {
             String reqJson = JSON.toJSONString(req);
             System.out.println("req json: " + reqJson);
 
             // 1.可以复用client
             // 2.尝试使用httpclient或者netty client
-//            new
             OkHttpClient client = new OkHttpClient();
             final Request request = new Request.Builder()
                     .url(url)
