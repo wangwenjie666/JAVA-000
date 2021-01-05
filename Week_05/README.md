@@ -381,7 +381,7 @@ http\://mybeanconfiguration/oneConfiguration/mybean.xsd=META-INF/namespace/mybea
 
 ```java
 @Slf4j
-public class Application {
+public class org.vijayian.Application {
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
         OneConfiguration bean = context.getBean("oneConfiguration", OneConfiguration.class);
