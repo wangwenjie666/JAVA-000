@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * application.
+ *  参考：https://www.cnblogs.com/happy4java/p/11205993.html
  *
  * @author ViJay
  */
