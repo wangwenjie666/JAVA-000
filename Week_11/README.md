@@ -26,7 +26,54 @@ Windows 10 Home机器必须满足以下要求才能安装Docker Desktop：
   - 必须在BIOS设置中启用BIOS级硬件虚拟化支持。有关更多信息，请参见 [虚拟化](https://docs.docker.com/docker-for-windows/troubleshoot/#virtualization-must-be-enabled)。
 - 下载并安装[Linux内核更新程序包](https://docs.microsoft.com/windows/wsl/wsl2-kernel)。
 
-网络太慢 TODO
+### docker安装
+
+下载运行hello-world
+
+```powershell
+docker pull library/hello-world
+docker run hello-world
+```
+
+查看docker信息
+
+```shell
+docker info
+```
+
+### 设置国内仓库
+
+```
+{
+  "registry-mirrors": [
+    "https://rq5uyt7.mirror.aliyuncs.com",
+    "https://docker.mirrors.ustc.edu.cn",
+    "https://registry.docker-cn.com"
+  ]
+}
+```
+
+### docker安装运行redis
+
+```
+拉取最新版
+docker pull redis:latest
+
+查看安装镜像
+docker images
+
+-p 6379:6379：映射容器服务的 6379 端口到宿主机的 6379 端口。外部可以直接通过宿主机ip:6379 访问到 Redis 的服务。
+docker run -itd --name redis-test -p 6379:6379 redis
+
+redis-cli 连接测试使用 redis 服务。
+docker exec -it redis-test /bin/bash
+
+进入redis-cli
+root@c3fbeec1d237:/data# redis-cli
+127.0.0.1:6379>
+```
+
+
 
 
 
