@@ -361,13 +361,13 @@ public class MovingAverage {
 - 栈帧由`操作数栈`，`局部变量数组`，`class引用`组成
 - class引用指向当前方法在常量池中对应的class
 
-#### 局部变量数组（局部变量表）
+#### 1.局部变量数组（局部变量表）
 
 包含了方法参数，局部变量
 
 局部变量数组在编译期确定大小
 
-#### 动态计算demo
+#### 2.动态计算demo
 
 ```java
 public class Demo {
@@ -411,6 +411,88 @@ public static void main(java.lang.String[]);
 - 10 返回
 
 **注：之所以要从本地变量表再load会栈，是因为store指令会删除栈上的值**
+
+#### 3.通过 verbose查看
+
+```java
+Classfile /D:/opt/JAVA-000/Week_01/code1/out/production/code1/com/vijayian/Demo.class
+  Last modified 2021-2-4; size 446 bytes
+  MD5 checksum 8bb4c41a12a4399c4ed6f35bc74b2dda
+  Compiled from "Demo.java"
+public class com.vijayian.Demo
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #3.#21         // java/lang/Object."<init>":()V
+   #2 = Class              #22            // com/vijayian/Demo
+   #3 = Class              #23            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               LocalVariableTable
+   #9 = Utf8               this
+  #10 = Utf8               Lcom/vijayian/Demo;
+  #11 = Utf8               main
+  #12 = Utf8               ([Ljava/lang/String;)V
+  #13 = Utf8               args
+  #14 = Utf8               [Ljava/lang/String;
+  #15 = Utf8               a
+  #16 = Utf8               I
+  #17 = Utf8               b
+  #18 = Utf8               c
+  #19 = Utf8               SourceFile
+  #20 = Utf8               Demo.java
+  #21 = NameAndType        #4:#5          // "<init>":()V
+  #22 = Utf8               com/vijayian/Demo
+  #23 = Utf8               java/lang/Object
+{
+  public com.vijayian.Demo();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 9: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lcom/vijayian/Demo;
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=1, locals=4, args_size=1
+         0: iconst_1
+         1: istore_1
+         2: iconst_2
+         3: istore_2
+         4: bipush        15
+         6: istore_3
+         7: return
+      LineNumberTable:
+        line 11: 0
+        line 12: 2
+        line 13: 4
+        line 14: 7
+       //本地变量表 args ,a,b,c
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       8     0  args   [Ljava/lang/String;
+            2       6     1     a   I
+            4       4     2     b   I
+            7       1     3     c   I
+}
+SourceFile: "Demo.java"
+
+
+```
+
+
 
 ## 4.类的生命周期
 
@@ -839,12 +921,6 @@ public class homework.HelloWorld {
 ![](./内存图.png)
 
 **4.（选做）**检查一下自己维护的业务系统的 JVM 参数配置，用 jstat 和 jstack、jmap 查看一下详情，并且自己独立分析一下大概情况，思考有没有不合理的地方，如何改进。
-
-
-
-
-
-
 
 
 
